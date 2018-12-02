@@ -4,23 +4,17 @@
 # esp.osdebug(None)
 
 print('start boot.py execution')
+import gc
 
 # activate webrepl
-import gc
 import webrepl
 
 webrepl.start()
 
-gc.collect()
-
-# dissable AP
-import network
-
-network.WLAN(network.AP_IF).active(False)
-
-# connect wifi
-import wifi
+from root import wifi
 
 wifi.do_connect()
+wifi.disable_ap()
 
+gc.collect()
 print('end boot.py execution')

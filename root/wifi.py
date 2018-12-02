@@ -1,7 +1,7 @@
 import time
 import network
 
-import led
+from root import led
 
 
 def do_connect():
@@ -22,3 +22,7 @@ def do_connect():
         else:
             print('could not connect')
             led.blink(160, count=3, off_time=80)
+
+
+def disable_ap():
+    network.WLAN(network.AP_IF).active(False)

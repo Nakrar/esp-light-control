@@ -84,9 +84,9 @@ def accept_request():
     if body:
         if type(body) != bytes:
             body = body.encode()
-        headers = b"Content-Type: text/html; encoding=utf8\n" +\
-        "Content-Length: {}\n".format(len(body)).encode() +\
-        b"Connection: close\n"
+        headers = b'Content-Type: text/html; encoding=utf8\n' +\
+        'Content-Length: {}\n'.format(len(body)).encode() +\
+        b'Connection: close\n'
 
         conn.send(headers)
         conn.send(b'\n')
@@ -96,11 +96,11 @@ def accept_request():
     gc.collect()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from endpoints import *
     while True:
         try:
             accept_request()
         except Exception as e:
-            print(f'Exception {e}')
+            print('Exception {}'.format(e))
 

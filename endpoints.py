@@ -4,7 +4,7 @@ import strips
 
 @register('/')
 def home_endpoint(request):
-    return "Hello user! Choices are: ceil, wall, rgb, all."
+    return 'Hello user! Choices are: ceil, wall, rgb, all.'
 
 
 @register('/strip/ceil')
@@ -27,7 +27,7 @@ def strip_endpoint(request):
         value = None
 
     if value is None or not (0 <= value <= 100):
-        return "must be True: 0 <= value <= 100"
+        return 'must be True: 0 <= value <= 100'
 
     if strip_name == 'all':
         for strip in strips.STRIPS:
@@ -35,4 +35,4 @@ def strip_endpoint(request):
     else:
         strips.set_brightness(strip, value)
 
-    return "{} {}".format(strip_name, value)
+    return '{} {}'.format(strip_name, value)

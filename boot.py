@@ -15,6 +15,7 @@ gc.collect()
 import wifi
 
 wifi.do_connect()
+print('do wifi.disable_ap')
 wifi.disable_ap()
 
 print('end boot.py execution')

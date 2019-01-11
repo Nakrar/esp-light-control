@@ -5,4 +5,4 @@ while True:
     try:
         accept_request()
     except Exception as e:
-        print(f'Exception {e}')
+        print('Exception {}'.format(e))

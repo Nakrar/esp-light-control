@@ -1,5 +1,7 @@
 import socket
+import gc
 
+import led
 from routes import ROUTES
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -66,7 +68,7 @@ def process_request(request):
 def accept_request():
     conn, addr = s.accept()
 
-    print('Got a connection from %s' % str(addr))
+    led.blink(100)
 
     request = parse_requset(conn)
 
@@ -91,6 +93,7 @@ def accept_request():
         conn.send(body)
 
     conn.close()
+    gc.collect()
 
 
 if __name__ == "__main__":

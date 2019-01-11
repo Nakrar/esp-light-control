@@ -10,11 +10,12 @@ import gc
 import webrepl
 
 webrepl.start()
+gc.collect()
 
-from root import wifi
+import wifi
 
 wifi.do_connect()
 wifi.disable_ap()
 
-gc.collect()
 print('end boot.py execution')
+gc.collect()

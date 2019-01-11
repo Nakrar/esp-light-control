@@ -1,7 +1,7 @@
 import time
 import network
 
-from root import led
+import led
 
 
 def do_connect():
@@ -14,7 +14,7 @@ def do_connect():
 
         for x in range(5):
             led.blink(300)
-            time.sleep_ms(1500)
+            time.sleep(1.5)
             if sta_if.isconnected():
                 led.blink(720)
                 print('network config:', sta_if.ifconfig())

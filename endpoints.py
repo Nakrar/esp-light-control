@@ -35,4 +35,4 @@ def strip_endpoint(request):
     else:
         strips.set_brightness(strip, value)
 
-    return f"{strip_name} {value}"
+    return "{} {}".format(strip_name, value)

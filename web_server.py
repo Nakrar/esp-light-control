@@ -85,7 +85,7 @@ def accept_request():
         if type(body) != bytes:
             body = body.encode()
         headers = b"Content-Type: text/html; encoding=utf8\n" +\
-        f"Content-Length: {len(body)}\n".encode() +\
+        "Content-Length: {}\n".format(len(body)).encode() +\
         b"Connection: close\n"
 
         conn.send(headers)

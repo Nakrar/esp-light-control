@@ -1,17 +1,16 @@
-from routes import register
+import routes
 import strips
 
 
-@register('/')
+@routes.register('/')
 def home_endpoint(request):
     return 'Hello user! Choices are: ceil, wall, rgb, all.'
 
 
-@register('/strip/ceil')
-@register('/strip/wall')
-@register('/strip/rgb')
-@register('/strip/blue')
-@register('/strip/all')
+@routes.register('/strip/ceil')
+@routes.register('/strip/wall')
+@routes.register('/strip/rgb')
+@routes.register('/strip/all')
 def strip_endpoint(request):
     strip_name = request['path'].split('/')[-1]
 

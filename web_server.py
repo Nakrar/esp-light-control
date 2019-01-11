@@ -1,8 +1,7 @@
 import socket
-import gc
 
 import led
-from routes import ROUTES
+import routes
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 80))
@@ -14,7 +13,7 @@ RESPONSE_404 = b'HTTP/1.1 404 NOT FOUND\n'
 RESPONSE_500 = b'HTTP/1.1 500 INTERNAL SERVER ERROR\n'
 
 
-def parse_requset(conn):
+def parse_request(conn):
     conn_data = conn.recv(1024).decode().strip().split()
 
     if not conn_data:
@@ -50,7 +49,7 @@ def process_request(request):
     body = None
     if request:
         path = request['path']
-        handler = ROUTES.get(path)
+        handler = routes.ROUTES.get(path)
 
         if not handler:
             # 404
@@ -70,7 +69,7 @@ def accept_request():
 
     led.blink(100)
 
-    request = parse_requset(conn)
+    request = parse_request(conn)
 
     if request:
         response, body = process_request(request)
@@ -84,23 +83,12 @@ def accept_request():
     if body:
         if type(body) != bytes:
             body = body.encode()
-        headers = b'Content-Type: text/html; encoding=utf8\n' +\
-        'Content-Length: {}\n'.format(len(body)).encode() +\
-        b'Connection: close\n'
+        headers = b'Content-Type: text/html; encoding=utf8\n' + \
+                  'Content-Length: {}\n'.format(len(body)).encode() + \
+                  b'Connection: close\n'
 
         conn.send(headers)
         conn.send(b'\n')
         conn.send(body)
 
     conn.close()
-    gc.collect()
-
-
-if __name__ == '__main__':
-    from endpoints import *
-    while True:
-        try:
-            accept_request()
-        except Exception as e:
-            print('Exception {}'.format(e))
-

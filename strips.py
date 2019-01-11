@@ -2,18 +2,24 @@ import machine
 
 # 5
 # 14
-import led
 
 FREQ = 1000
 MAX_PWM = 1023
 
 STRIPS = {
-    'ceil': machine.PWM(machine.Pin(5), freq=FREQ, duty=0),
-    'wall': machine.PWM(machine.Pin(14), freq=FREQ, duty=0),
-    'blue': machine.PWM(led._led, freq=FREQ, duty=0),
+    'ceil': machine.PWM(machine.Pin(5), freq=FREQ, duty=MAX_PWM),
+    'wall': machine.PWM(machine.Pin(14), freq=FREQ, duty=MAX_PWM),
     # 'rgb': 'None',
 }
 
 
 def set_brightness(strip, value):
-    strip.duty(int(MAX_PWM / 100 * value))
+    # PWM is inverted. MAX_PWM is off, 0 is on
+    if value == 100:
+        target = 0
+    elif value == 0:
+        target = MAX_PWM
+    else:
+        target = int(MAX_PWM / 100 * (100 - value))
+
+    strip.duty(target)

@@ -1,5 +1,4 @@
 import machine
-from machine import Timer
 
 _led = machine.Pin(2, machine.Pin.OUT, value=1)
 
@@ -10,10 +9,10 @@ def blink(on_time, count=1, off_time=None):
 
     if count == 1:
         toggle()
-        tim = Timer(-1)
-        tim.init(period=on_time, mode=Timer.ONE_SHOT, callback=lambda t: toggle())
+        tim = machine.Timer(-1)
+        tim.init(period=on_time, mode=machine.Timer.ONE_SHOT, callback=lambda t: toggle())
     else:
-        tim = Timer(-1)
+        tim = machine.Timer(-1)
 
         counter = count
         period = on_time + off_time
@@ -27,7 +26,7 @@ def blink(on_time, count=1, off_time=None):
                 counter -= 1
                 blink(on_time)
 
-        tim.init(period=period, mode=Timer.PERIODIC, callback=_callback)
+        tim.init(period=period, mode=machine.Timer.PERIODIC, callback=_callback)
 
 
 def off():

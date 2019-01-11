@@ -1,10 +1,11 @@
 import socket
 
-import led
 import routes
+import endpoints
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(('', 80))
+addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+s = socket.socket()
+s.bind(addr)
 s.listen(1)
 
 RESPONSE_200 = b'HTTP/1.1 200 OK\n'
@@ -66,8 +67,6 @@ def process_request(request):
 
 def accept_request():
     conn, addr = s.accept()
-
-    led.blink(100)
 
     request = parse_request(conn)
 

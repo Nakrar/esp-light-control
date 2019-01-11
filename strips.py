@@ -9,9 +9,7 @@ MAX_PWM = 1023
 STRIPS = {
     'ceil': machine.PWM(machine.Pin(5), freq=FREQ, duty=MAX_PWM),
     'wall': machine.PWM(machine.Pin(14), freq=FREQ, duty=MAX_PWM),
-    # 'rgb': 'None',
 }
-
 
 def set_brightness(strip, value):
     # PWM is inverted. MAX_PWM is off, 0 is on

@@ -1,4 +1,8 @@
+import time
 import gc
+
+time.sleep(3)
+gc.collect()
 
 import web_server
 

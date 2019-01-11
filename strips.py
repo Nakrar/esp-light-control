@@ -13,11 +13,11 @@ STRIPS = {
 
 def set_brightness(strip, value):
     # PWM is inverted. MAX_PWM is off, 0 is on
-    if value == 100:
+    if value == 0:
         target = 0
-    elif value == 0:
+    elif value == 100:
         target = MAX_PWM
     else:
-        target = int(MAX_PWM / 100 * (100 - value))
+        target = int(MAX_PWM / 100 * value)
 
     strip.duty(target)

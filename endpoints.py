@@ -9,6 +9,7 @@ def home_endpoint(request):
 
 @routes.register('/strip/ceil')
 @routes.register('/strip/wall')
+@routes.register('/strip/window')
 @routes.register('/strip/rgb')
 @routes.register('/strip/all')
 def strip_endpoint(request):
@@ -29,7 +30,7 @@ def strip_endpoint(request):
         return 'must be True: 0 <= value <= 100'
 
     if strip_name == 'all':
-        for strip in strips.STRIPS:
+        for strip in strips.STRIPS.values():
             strips.set_brightness(strip, value)
     else:
         strips.set_brightness(strip, value)

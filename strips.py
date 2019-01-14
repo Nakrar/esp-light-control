@@ -7,8 +7,9 @@ FREQ = 1000
 MAX_PWM = 1023
 
 STRIPS = {
-    'ceil': machine.PWM(machine.Pin(5), freq=FREQ, duty=MAX_PWM),
-    'wall': machine.PWM(machine.Pin(14), freq=FREQ, duty=MAX_PWM),
+    'wall': machine.PWM(machine.Pin(5), freq=FREQ, duty=0),
+    'ceil': machine.PWM(machine.Pin(14), freq=FREQ, duty=0),
+    'window': machine.PWM(machine.Pin(13), freq=FREQ, duty=0),
 }
 
 def set_brightness(strip, value):

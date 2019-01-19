@@ -28,11 +28,22 @@ def strip_endpoint(request):
 
     if strip_name == 'all':
         for strip in strips.STRIPS.values():
-            strips.set_brightness(strip, value)
+            strip.set_brightness(strip, value)
     else:
-        strips.set_brightness(strip, value)
+        strip.set_brightness(strip, value)
 
     return '{} {}'.format(strip_name, value)
+
+
+@routes.register('/strip/rgb/demo')
+def rgb_demo_endpoint(request):
+    strip = strips.STRIPS.get('rgb')
+    if strip is None:
+        return 'not found'
+
+    strip.demo()
+
+    return
 
 
 def register():

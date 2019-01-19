@@ -4,13 +4,10 @@ import strips
 
 @routes.register('/')
 def home_endpoint(request):
-    return 'Hello user! Choices are: ceil, wall, rgb, all.'
+    return 'Hello user! Choices are: all, {}.'.format(strips.STRIPS.keys().join(', '))
 
 
-@routes.register('/strip/ceil')
-@routes.register('/strip/wall')
-@routes.register('/strip/window')
-@routes.register('/strip/rgb')
+@routes.register('/strip/*')
 @routes.register('/strip/all')
 def strip_endpoint(request):
     strip_name = request['path'].split('/')[-1]
@@ -36,3 +33,8 @@ def strip_endpoint(request):
         strips.set_brightness(strip, value)
 
     return '{} {}'.format(strip_name, value)
+
+
+def register():
+    # dummy for IDE
+    pass

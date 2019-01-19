@@ -1,7 +1,6 @@
 import socket
 
 import routes
-import endpoints
 
 addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
 s = socket.socket()
@@ -46,11 +45,22 @@ def parse_request(conn):
     return request
 
 
+def get_handler(path):
+
+    for x in range(path.count('/')):
+        handler = routes.ROUTES.get(path)
+        if handler:
+            return handler
+        sep_ind = path.rfind("/")
+        path = path[:sep_ind+1] + '*'
+
+    return routes.ROUTES.get(path)
+
+
 def process_request(request):
     body = None
     if request:
-        path = request['path']
-        handler = routes.ROUTES.get(path)
+        handler = get_handler(request['path'])
 
         if not handler:
             # 404

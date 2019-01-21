@@ -1,16 +1,54 @@
 import socket
+import sys
 
 import routes
-
-addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
-s = socket.socket()
-s.bind(addr)
-s.listen(1)
 
 RESPONSE_200 = b'HTTP/1.1 200 OK\n'
 RESPONSE_204 = b'HTTP/1.1 200 NO CONTENT\n'
 RESPONSE_404 = b'HTTP/1.1 404 NOT FOUND\n'
 RESPONSE_500 = b'HTTP/1.1 500 INTERNAL SERVER ERROR\n'
+
+
+class Server:
+
+    def __init__(self, blocking=True):
+        addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+        s = socket.socket()
+        s.bind(addr)
+        s.listen(1)
+        s.setblocking(blocking)
+        self.s = s
+
+    def accept_request(self):
+        try:
+            conn, addr = self.s.accept()
+        except Exception:
+            # todo make proper exception
+            return
+
+        request = parse_request(conn)
+
+        if request:
+            response, body = process_request(request)
+        else:
+            response, body = RESPONSE_204, None
+
+        # reply as server
+        conn.send(response)
+
+        # send headers and body
+        if body:
+            if type(body) != bytes:
+                body = body.encode()
+            headers = b'Content-Type: text/html; encoding=utf8\n' + \
+                      'Content-Length: {}\n'.format(len(body)).encode() + \
+                      b'Connection: close\n'
+
+            conn.send(headers)
+            conn.send(b'\n')
+            conn.send(body)
+
+        conn.close()
 
 
 def parse_request(conn):
@@ -46,13 +84,12 @@ def parse_request(conn):
 
 
 def get_handler(path):
-
     for x in range(path.count('/')):
         handler = routes.ROUTES.get(path)
         if handler:
             return handler
         sep_ind = path.rfind("/")
-        path = path[:sep_ind+1] + '*'
+        path = path[:sep_ind + 1] + '*'
 
     return routes.ROUTES.get(path)
 
@@ -70,34 +107,7 @@ def process_request(request):
             body = handler(request)
         except Exception as e:
             # 500
+            sys.print_exception(e)
             return RESPONSE_500, str(e).encode()
     # 200
     return RESPONSE_200, body
-
-
-def accept_request():
-    conn, addr = s.accept()
-
-    request = parse_request(conn)
-
-    if request:
-        response, body = process_request(request)
-    else:
-        response, body = RESPONSE_204, None
-
-    # reply as server
-    conn.send(response)
-
-    # send headers and body
-    if body:
-        if type(body) != bytes:
-            body = body.encode()
-        headers = b'Content-Type: text/html; encoding=utf8\n' + \
-                  'Content-Length: {}\n'.format(len(body)).encode() + \
-                  b'Connection: close\n'
-
-        conn.send(headers)
-        conn.send(b'\n')
-        conn.send(body)
-
-    conn.close()

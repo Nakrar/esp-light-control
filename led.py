@@ -4,6 +4,8 @@ _led = machine.Pin(2, machine.Pin.OUT, value=1)
 
 
 def blink(on_time, count=1, off_time=None):
+    # todo: led causes reset issue
+    return
     if count < 1:
         return
 
@@ -30,12 +32,18 @@ def blink(on_time, count=1, off_time=None):
 
 
 def off():
+    return
+
     _led.on()
 
 
 def on():
+    return
+
     _led.off()
 
 
 def toggle():
+    return
+
     _led.value(not _led.value())

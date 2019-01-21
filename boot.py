@@ -4,13 +4,11 @@
 # esp.osdebug(None)
 
 print('start boot.py execution')
-import gc
 
 # activate webrepl
 import webrepl
 
 webrepl.start()
-gc.collect()
 
 import wifi
 

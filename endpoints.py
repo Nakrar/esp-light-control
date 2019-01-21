@@ -28,9 +28,9 @@ def strip_endpoint(request):
 
     if strip_name == 'all':
         for strip in strips.STRIPS.values():
-            strip.set_brightness(strip, value)
+            strip.set_brightness(value)
     else:
-        strip.set_brightness(strip, value)
+        strip.set_brightness(value)
 
     return '{} {}'.format(strip_name, value)
 
@@ -42,8 +42,6 @@ def rgb_demo_endpoint(request):
         return 'not found'
 
     strip.demo()
-
-    return
 
 
 def register():

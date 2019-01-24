@@ -38,7 +38,7 @@ class StripNEO:
         if value == 100:
             target = (255, 255, 255)
         else:
-            target = int(MAX_PWM / 100 * value)
+            target = (int(MAX_PWM / 100 * value),) * 3
         for i in range(self._np.n):
             self._np[i] = target
         self._np.write()

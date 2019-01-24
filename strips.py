@@ -7,7 +7,7 @@ import time
 
 FREQ = 1000
 MAX_PWM = 1023
-RGB_COUNT = 160
+RGB_COUNT = 174
 
 
 class StripPWM:
@@ -32,6 +32,7 @@ class StripNEO:
     def __init__(self, pin_id):
         pin = machine.Pin(pin_id, machine.Pin.OUT)
         self._np = neopixel.NeoPixel(pin, RGB_COUNT)  # create NeoPixel driver on GPIO0 for 8 pixels
+        self.set_brightness(0)
 
     def set_brightness(self, value):
         if value == 100:
@@ -83,8 +84,8 @@ class StripNEO:
 
 
 STRIPS = {
-    'wall': StripPWM(5),
-    'ceil': StripPWM(14),
+    'ceil': StripPWM(5),
+    'wall': StripPWM(14),
     'window': StripPWM(13),
     'rgb': StripNEO(2),
 }

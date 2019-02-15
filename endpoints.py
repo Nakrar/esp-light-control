@@ -1,10 +1,13 @@
+import led
 import routes
 import strips
 
 
 @routes.register('/')
+@routes.register('/index')
+@routes.register('/home')
 def home_endpoint(request):
-    return 'Hello user! Choices are: all, {}.'.format(strips.STRIPS.keys().join(', '))
+    return 'Hello user! Choices are: all, {}.'.format(', '.join(strips.STRIPS.keys()))
 
 
 @routes.register('/strip/*')
@@ -35,13 +38,43 @@ def strip_endpoint(request):
     return '{} {}'.format(strip_name, value)
 
 
-@routes.register('/strip/rgb/demo')
-def rgb_demo_endpoint(request):
+@routes.register('/strip/rgb/color')
+def rgb_color_endpoint(request):
     strip = strips.STRIPS.get('rgb')
     if strip is None:
         return 'not found'
 
-    strip.demo()
+    value = request['args'].get('value')
+
+    try:
+        color = tuple(int(x) for x in value.split(','))
+    except (ValueError, TypeError):
+        color = None
+
+    if color is None or not all(0 <= c <= 255 for c in color):
+        return 'value must be "R,G,B" where r,g,b colors with from 0 to 255'
+
+    strip.set_color(color)
+
+    return
+
+
+@routes.register('/led')
+def led_endpoint(request):
+    value = request['args'].get('value')
+
+    try:
+        value = int(value)
+    except (ValueError, TypeError):
+        value = None
+
+    if value is None and value != 1 and value != 0:
+        return 'value must be 0 or 1'
+
+    if value:
+        led.on()
+    else:
+        led.off()
 
 
 def register():

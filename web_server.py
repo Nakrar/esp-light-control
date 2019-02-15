@@ -1,3 +1,4 @@
+import uselect
 import socket
 import sys
 
@@ -14,17 +15,40 @@ class Server:
     def __init__(self, blocking=True):
         addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
         s = socket.socket()
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind(addr)
         s.listen(1)
-        s.setblocking(blocking)
-        self.s = s
+        s.settimeout(10)
 
-    def accept_request(self):
-        try:
-            conn, addr = self.s.accept()
-        except Exception:
-            # todo make proper exception
+        self._socket = s
+        if not blocking:
+            self._listen_poll = uselect.poll()
+            self._listen_poll.register(self._socket)
+        else:
+            self._listen_poll = None
+
+    def stop(self):
+        if self._listen_poll:
+            self._listen_poll.unregister(self._socket)
+        self._listen_poll = None
+        if self._socket:
+            self._socket.close()
+        self._socket = None
+
+    def _get_new_connections(self):
+        poll_events = self._listen_poll.poll(0)
+        if not poll_events:
             return
+
+        if poll_events[0][1] & uselect.POLLIN:
+            try:
+                conn, addr = self._socket.accept()
+            except Exception:
+                # todo make proper exception
+                return
+            return conn
+
+    def accept_handler(self, conn):
 
         request = parse_request(conn)
 
@@ -48,7 +72,13 @@ class Server:
             conn.send(b'\n')
             conn.send(body)
 
-        conn.close()
+    def accept_request(self):
+        conn = self._get_new_connections()
+
+        if conn:
+            self.accept_handler(conn)
+
+            conn.close()
 
 
 def parse_request(conn):

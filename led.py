@@ -32,18 +32,12 @@ def blink(on_time, count=1, off_time=None):
 
 
 def off():
-    return
-
     _led.on()
 
 
 def on():
-    return
-
     _led.off()
 
 
 def toggle():
-    return
-
     _led.value(not _led.value())

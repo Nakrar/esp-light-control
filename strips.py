@@ -5,7 +5,7 @@ import time
 # 5
 # 14
 
-FREQ = 1000
+FREQ = 1000000
 MAX_PWM = 1023
 RGB_COUNT = 174
 
@@ -49,8 +49,8 @@ class StripNEO:
 
 
 STRIPS = {
-    'ceil': StripPWM(5),
-    'wall': StripPWM(14),
-    'window': StripPWM(13),
-    'rgb': StripNEO(2),
+    'ceil': StripPWM(22), # 5
+    'wall': StripPWM(23), # 14
+    'window': StripPWM(18), # 13
+    'rgb': StripNEO(21), # 2
 }

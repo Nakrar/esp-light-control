@@ -12,7 +12,20 @@ class WebSocketClient:
         self.connection = conn
 
     def process(self):
-        pass
+        try:
+            msg = self.connection.read()
+            if not msg:
+                return
+            self._process(msg)
+            return True
+        except ClientClosedError:
+            self.connection.close()
+        except Exception as e:
+            self.connection.close()
+            raise e
+
+    def _process(self, msg):
+        raise NotImplementedError
 
 
 class WebSocketServer:
@@ -100,10 +113,17 @@ class WebSocketServer:
         print("Started WebSocket server.")
 
     def process_all(self):
+        self.process_new_connections()
+        self.process_clients()
+
+    def process_new_connections(self):
         self._check_new_connections(self._accept_conn)
 
+    def process_clients(self):
+        client_processed = False
         for client in self._clients:
-            client.process()
+            client_processed = client.process() or client_processed
+        return client_processed
 
     def remove_connection(self, conn):
         for client in self._clients:

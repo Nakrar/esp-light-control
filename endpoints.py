@@ -46,10 +46,19 @@ def rgb_color_endpoint(request):
 
     value = request['args'].get('value')
 
+    # for rgb "255,255,255" format
     try:
         color = tuple(int(x) for x in value.split(','))
     except (ValueError, TypeError):
         color = None
+
+    # for hex "ffbb00" format
+    if color is None and len(value) == 6:
+        try:
+            color = x = int(value, 16)
+        except (ValueError, TypeError):
+            color = None
+        color = (color >> 16 & 255, color >> 8 & 255, color & 255)
 
     if color is None or not all(0 <= c <= 255 for c in color):
         return 'value must be "R,G,B" where r,g,b colors with from 0 to 255'

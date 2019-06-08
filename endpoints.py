@@ -65,7 +65,7 @@ def rgb_color_endpoint(request):
 
     strip.set_color(color)
 
-    return
+    return ''
 
 
 @routes.register('/led')

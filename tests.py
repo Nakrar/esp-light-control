@@ -44,5 +44,3 @@ class WevServerHandlerTest(unittest.TestCase):
 
         if web_server.get_handler('un-registered-route') is not None:
             self.fail("there should not be any handler")
-
-

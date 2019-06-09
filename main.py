@@ -32,7 +32,6 @@ def main():
                     print('sleep')
                     time.sleep_ms(100)
 
-
     except BaseException as e:
         print('Exception {}'.format(e))
         server.stop()

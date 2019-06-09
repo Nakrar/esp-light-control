@@ -14,18 +14,17 @@ class Server:
 
     def __init__(self, blocking=True):
         addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
-        s = socket.socket()
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(addr)
         s.listen(1)
         s.settimeout(10)
 
         self._socket = s
+
+        self._listen_poll = None
         if not blocking:
             self._listen_poll = uselect.poll()
             self._listen_poll.register(self._socket)
-        else:
-            self._listen_poll = None
 
     def stop(self):
         if self._listen_poll:

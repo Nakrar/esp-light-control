@@ -1,3 +1,5 @@
+# based on https://github.com/BetaRavener/upy-websocket-server
+
 import socket
 from websocket import websocket
 import uselect
@@ -8,13 +10,13 @@ class ClientClosedError(Exception):
 
 
 class WebSocketConnection:
-    def __init__(self, addr, s, close_callback):
+    def __init__(self, addr, socket, close_callback):
         self.client_close = False
         self._need_check = False
 
         self.address = addr
-        self.socket = s
-        self.ws = websocket(s, True)
+        self.socket = socket
+        self.ws = websocket(socket, True)
         self.poll = uselect.poll()
         self.close_callback = close_callback
 

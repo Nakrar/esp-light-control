@@ -1,3 +1,5 @@
+# based on https://github.com/BetaRavener/upy-websocket-server
+
 import os
 import socket
 import network
@@ -28,8 +30,8 @@ class WebSocketClient:
         raise NotImplementedError
 
 
-class WebSocketServer:
-    def __init__(self, page, max_connections=1):
+class WebServer:
+    def __init__(self, page, max_connections=2):
         self._listen_s = None
         self._listen_poll = None
         self._clients = []
@@ -41,58 +43,62 @@ class WebSocketServer:
         self._listen_s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._listen_poll = uselect.poll()
 
+        # bind it to ("0.0.0.0", port)
         ai = socket.getaddrinfo("0.0.0.0", port)
         addr = ai[0][4]
-
         self._listen_s.bind(addr)
-        self._listen_s.listen(1)
+
+        self._listen_s.listen(0)
         self._listen_poll.register(self._listen_s)
+
+        # print address for AccessPoint and Station modes
         for i in (network.AP_IF, network.STA_IF):
             iface = network.WLAN(i)
             if iface.active():
-                print("WebSocket started on ws://%s:%d" % (iface.ifconfig()[0], port))
+                print("Web started on ws://%s:%d" % (iface.ifconfig()[0], port))
 
-    def _check_new_connections(self, accept_handler):
+    def _check_new_connections(self):
         poll_events = self._listen_poll.poll(0)
         if not poll_events:
             return
 
+        #  take first (file descriptor, event) and event from there
         if poll_events[0][1] & uselect.POLLIN:
-            accept_handler()
+            self._accept_conn()
 
     def _accept_conn(self):
-        cl, remote_addr = self._listen_s.accept()
+        conn, remote_addr = self._listen_s.accept()
         print("Client connection from:", remote_addr)
 
         if len(self._clients) >= self._max_connections:
             # Maximum connections limit reached
-            cl.setblocking(True)
-            cl.sendall("HTTP/1.1 503 Too many connections\n\n")
-            cl.sendall("\n")
+            conn.setblocking(True)
+            conn.sendall("HTTP/1.1 503 Too many connections\n\n")
+            conn.sendall("\n")
             # TODO: Make sure the data is sent before closing
             sleep(0.1)
-            cl.close()
+            conn.close()
             return
 
+        # try establish websocket connection
         try:
-            websocket_helper.server_handshake(cl)
+            websocket_helper.server_handshake(conn)
         except OSError:
             # Not a websocket connection, serve webpage
-            self._serve_page(cl)
+            self._serve_page(conn)
             return
 
-        self._clients.append(self._make_client(WebSocketConnection(remote_addr, cl, self.remove_connection)))
+        ws_conn = WebSocketConnection(remote_addr, conn, self.remove_connection)
+        ws_client = WebSocketClient(ws_conn)
+        self._clients.append(ws_client)
 
-    def _make_client(self, conn):
-        return WebSocketClient(conn)
-
-    def _serve_page(self, sock):
+    def _serve_page(self, client):
         try:
-            sock.sendall('HTTP/1.1 202 OK\nConnection: close\nServer: WebSocket Server\nContent-Type: text/html\n')
+            client.sendall('HTTP/1.1 202 OK\nConnection: close\nServer: Web Server\nContent-Type: text/html\n')
         except OSError:
             # Error while serving webpage
             pass
-        sock.close()
+        client.close()
 
     def stop(self):
         if self._listen_poll:
@@ -104,26 +110,26 @@ class WebSocketServer:
 
         for client in self._clients:
             client.connection.close()
-        print("Stopped WebSocket server.")
+        print("Stopped Web server.")
 
     def start(self, port=80):
         if self._listen_s:
             self.stop()
         self._setup_conn(port)
-        print("Started WebSocket server.")
+        print("Started Web server.")
 
     def process_all(self):
         self.process_new_connections()
         self.process_clients()
 
     def process_new_connections(self):
-        self._check_new_connections(self._accept_conn)
+        self._check_new_connections()
 
     def process_clients(self):
-        client_processed = False
+        work_done = False
         for client in self._clients:
-            client_processed = client.process() or client_processed
-        return client_processed
+            work_done = client.process() or work_done
+        return work_done
 
     def remove_connection(self, conn):
         for client in self._clients:

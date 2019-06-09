@@ -5,8 +5,7 @@ ROUTES = {
 def register(path):
     def decorator(fn):
         if path in ROUTES:
-            print('path already registered')
-            return
+            raise Exception('path already registered')
         ROUTES[path] = fn
         return fn
 

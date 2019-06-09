@@ -1,7 +1,7 @@
 import time
 import network
 
-import led
+from constants import WIFI_LOGIN, WIFI_PASS
 
 
 def do_connect():
@@ -10,18 +10,15 @@ def do_connect():
     if not sta_if.isconnected():
         print('connecting to network...')
         sta_if.active(True)
-        sta_if.connect('***REMOVED***', '***REMOVED***')
+        sta_if.connect(WIFI_LOGIN, WIFI_PASS)
 
         for x in range(5):
-            led.blink(300)
             time.sleep(1.5)
             if sta_if.isconnected():
-                led.blink(720)
                 print('network config:', sta_if.ifconfig())
                 break
         else:
             print('could not connect')
-            led.blink(160, count=3, off_time=80)
 
 
 def disable_ap():

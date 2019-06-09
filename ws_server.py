@@ -17,7 +17,7 @@ class WebSocketClient:
         try:
             msg = self.connection.read()
             if not msg:
-                return
+                return False
             self._process(msg)
             return True
         except ClientClosedError:

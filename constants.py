@@ -1,0 +1,5 @@
+NORMAL_IP = '***REMOVED***'
+DEBUG_IP = '***REMOVED***'
+
+WIFI_LOGIN = '***REMOVED***'
+WIFI_PASS ='***REMOVED***'

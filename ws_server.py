@@ -1,5 +1,5 @@
 # based on https://github.com/BetaRavener/upy-websocket-server
-
+import logging
 import os
 import socket
 import network
@@ -39,6 +39,7 @@ class WebServer:
         self._ws_client = ws_client
 
     def _setup_conn(self, port):
+        logging.debug("ws _setup_conn")
         self._listen_s = socket.socket()
         self._listen_s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._listen_poll = uselect.poll()
@@ -67,6 +68,7 @@ class WebServer:
             self._accept_conn()
 
     def _accept_conn(self):
+        logging.debug("ws _accept_conn")
         conn, remote_addr = self._listen_s.accept()
         print("Client connection from:", remote_addr)
 
@@ -126,12 +128,14 @@ class WebServer:
         self._check_new_connections()
 
     def process_clients(self):
+        logging.debug("ws process_clients")
         work_done = False
         for client in self._clients:
             work_done = client.process() or work_done
         return work_done
 
     def remove_connection(self, conn):
+        logging.debug("ws remove_connection")
         for client in self._clients:
             if client.connection is conn:
                 self._clients.remove(client)

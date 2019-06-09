@@ -1,3 +1,5 @@
+import logging
+
 import uselect
 import socket
 import sys
@@ -27,6 +29,7 @@ class Server:
             self._listen_poll.register(self._socket)
 
     def stop(self):
+        logging.debug("http stop")
         if self._listen_poll:
             self._listen_poll.unregister(self._socket)
         self._listen_poll = None
@@ -35,6 +38,7 @@ class Server:
         self._socket = None
 
     def _get_new_connections(self):
+        logging.debug("_get_new_connections")
         poll_events = self._listen_poll.poll(0)
         if not poll_events:
             return
@@ -48,7 +52,7 @@ class Server:
             return conn
 
     def accept_handler(self, conn):
-
+        logging.debug("http accept_handler")
         request = parse_request(conn)
 
         if request:
@@ -72,6 +76,7 @@ class Server:
             conn.send(body)
 
     def accept_request(self):
+        logging.debug("http accept_request")
         conn = self._get_new_connections()
 
         if conn:

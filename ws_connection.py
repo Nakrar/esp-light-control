@@ -1,6 +1,7 @@
 # based on https://github.com/BetaRavener/upy-websocket-server
 
 import socket
+import logging
 from websocket import websocket
 import uselect
 
@@ -56,7 +57,7 @@ class WebSocketConnection:
         return self.socket is None
 
     def close(self):
-        print("Closing connection.")
+        logging.info("Closing connection.")
         self.poll.unregister(self.socket)
         self.socket.close()
         self.socket = None

@@ -1,5 +1,6 @@
 # based on https://github.com/BetaRavener/upy-websocket-server
 
+import os
 import socket
 import network
 import websocket_helper

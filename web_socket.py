@@ -40,11 +40,3 @@ class WsClient(WebSocketClient):
                 self.rgb._np.fill(color)
                 self.rgb._np.write()
                 self.connection.write('set')
-
-
-class WsServer(WebServer):
-    def __init__(self):
-        super().__init__(None, 2)
-
-    def _make_client(self, conn):
-        return TestClient(conn)

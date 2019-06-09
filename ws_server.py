@@ -1,6 +1,5 @@
 # based on https://github.com/BetaRavener/upy-websocket-server
 
-import os
 import socket
 import network
 import websocket_helper
@@ -31,12 +30,12 @@ class WebSocketClient:
 
 
 class WebServer:
-    def __init__(self, page, max_connections=2):
+    def __init__(self, max_connections=2, ws_client=WebSocketClient):
         self._listen_s = None
         self._listen_poll = None
         self._clients = []
         self._max_connections = max_connections
-        self._page = page
+        self._ws_client = ws_client
 
     def _setup_conn(self, port):
         self._listen_s = socket.socket()
@@ -89,7 +88,7 @@ class WebServer:
             return
 
         ws_conn = WebSocketConnection(remote_addr, conn, self.remove_connection)
-        ws_client = WebSocketClient(ws_conn)
+        ws_client = self._ws_client(ws_conn)
         self._clients.append(ws_client)
 
     def _serve_page(self, client):

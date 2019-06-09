@@ -2,7 +2,8 @@ import time
 
 import led
 import web_server
-import web_socket
+import ws_server
+from web_socket import WsClient
 
 import endpoints
 
@@ -13,7 +14,7 @@ NO_CONN_SLEEP_THRESHOLD_MS = 15000
 
 def main():
     server = web_server.Server(blocking=False)
-    ws_server = web_socket.TestServer()
+    ws_server = ws_server.WebServer(ws_client=WsClient)
     ws_server.start(8080)
 
     last_conn = time.ticks_ms()

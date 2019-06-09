@@ -1,9 +1,9 @@
 import strips
 from ws_connection import ClientClosedError
-from ws_server import WebSocketServer, WebSocketClient
+from ws_server import WebServer, WebSocketClient
 
 
-class TestClient(WebSocketClient):
+class WsClient(WebSocketClient):
     def __init__(self, conn):
         super().__init__(conn)
         self.rgb = strips.STRIPS.get('rgb')
@@ -42,7 +42,7 @@ class TestClient(WebSocketClient):
                 self.connection.write('set')
 
 
-class TestServer(WebSocketServer):
+class WsServer(WebServer):
     def __init__(self):
         super().__init__(None, 2)
 

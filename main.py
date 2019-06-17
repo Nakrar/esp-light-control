@@ -11,14 +11,13 @@ import time
 
 import led
 import web_server
-import ws_server
 from web_socket import WsClient
 
 import endpoints
 
 endpoints.register()
 
-NO_CONN_SLEEP_THRESHOLD_MS = 15000
+NO_CONN_SLEEP_THRESHOLD_MS = 1500
 
 
 def main(critical_enabled=True):
@@ -35,12 +34,9 @@ def main(critical_enabled=True):
         if critical_enabled:
             return
 
-    logging.debug('startind http server')
-    http_s = web_server.Server(blocking=False)
-
     logging.debug('startind ws server')
-    ws_s = ws_server.WebServer(ws_client=WsClient)
-    ws_s.start(8080)
+    ws_s = web_server.WebServer(ws_client=WsClient)
+    ws_s.start(80)
 
     last_conn = time.ticks_ms()
 
@@ -52,22 +48,16 @@ def main(critical_enabled=True):
                 last_conn = time.ticks_ms()
             else:
                 ws_s.process_new_connections()
-                http_s.accept_request()
 
                 if time.ticks_diff(time.ticks_ms(), last_conn) > NO_CONN_SLEEP_THRESHOLD_MS:
                     # required for WEB repl on ESP32
-                    logging.info('sleep')
+                    logging.debug('sleep')
                     time.sleep_ms(100)
             logging.debug('main cycle end')
 
     except BaseException as e:
-        logging.warning('Exception {}'.format(e))
-        http_s.stop()
         ws_s.stop()
         raise e
-
-    # print('new cycle')
-    # time.sleep_ms(10)
 
 
 # off by default on esp32

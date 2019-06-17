@@ -1,6 +1,5 @@
 import strips
-from ws_connection import ClientClosedError
-from ws_server import WebServer, WebSocketClient
+from web_server import WebSocketClient
 
 
 class WsClient(WebSocketClient):

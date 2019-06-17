@@ -1,3 +1,5 @@
+import logging
+
 import led
 import routes
 import strips
@@ -63,6 +65,7 @@ def rgb_color_endpoint(request):
     if color is None or not all(0 <= c <= 255 for c in color):
         return 'value must be "R,G,B" where r,g,b colors with from 0 to 255'
 
+    logging.info('set color {}'.format(color))
     strip.set_color(color)
 
     return ''

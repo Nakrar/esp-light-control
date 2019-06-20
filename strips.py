@@ -1,9 +1,5 @@
 import machine
 import neopixel
-import time
-
-# 5
-# 14
 
 FREQ = 100000
 MAX_PWM = 1023
@@ -17,12 +13,7 @@ class StripPWM:
         self._pwm = machine.PWM(pin, freq=FREQ, duty=0)
 
     def set_brightness(self, value):
-        if value == 0:
-            target = 0
-        elif value == 100:
-            target = MAX_PWM
-        else:
-            target = int(MAX_PWM / 100 * value)
+        target = int(MAX_PWM * (value / 100))
 
         self._pwm.duty(target)
 
@@ -35,12 +26,8 @@ class StripNEO:
         self.set_brightness(0)
 
     def set_brightness(self, value):
-        if value == 100:
-            target = (255, 255, 255)
-        else:
-            target = (int(MAX_PWM / 100 * value),) * 3
-        for i in range(self._np.n):
-            self._np[i] = target
+        target = (int(255 * (value / 100)),) * 3
+        self._np.fill(target)
         self._np.write()
 
     def set_color(self, color):
@@ -50,7 +37,7 @@ class StripNEO:
 
 STRIPS = {
     'ceil': StripPWM(22),  # 5
-    'wall': StripPWM(23),  # 14
-    'window': StripPWM(18),  # 13
+    'window': StripPWM(23),  # 14
+    'wall': StripPWM(18),  # 13
     'rgb': StripNEO(21),  # 2
 }

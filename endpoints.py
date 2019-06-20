@@ -1,5 +1,6 @@
 import logging
 
+import animations
 import led
 import routes
 import strips
@@ -32,10 +33,16 @@ def strip_endpoint(request):
         return 'must be True: 0 <= value <= 100'
 
     if strip_name == 'all':
-        for strip in strips.STRIPS.values():
-            strip.set_brightness(value)
+        stps = strips.STRIPS.values()
     else:
-        strip.set_brightness(value)
+        stps = (strip,)
+
+    for strip in stps:
+        # we want to achieve desired brightness in 0.6 second
+        # for now there is 100fps
+        step = (value - strip.get_brightness()) / 0.6 / 100
+        anim = animations.brightness_animation(strip, strip.get_brightness(), value, step)
+        animations.add_animation(anim)
 
     return '{} {}'.format(strip_name, value)
 

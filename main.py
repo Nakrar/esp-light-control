@@ -1,6 +1,7 @@
 # upip.install('micropython-logging')
 import logging
 
+import animations
 from constants import DEBUG_IP, NORMAL_IP
 
 logging.basicConfig(level=logging.INFO)
@@ -48,11 +49,14 @@ def main(critical_enabled=True):
                 last_conn = time.ticks_ms()
             else:
                 ws_s.process_new_connections()
-
-                if time.ticks_diff(time.ticks_ms(), last_conn) > NO_CONN_SLEEP_THRESHOLD_MS:
-                    # required for WEB repl on ESP32
-                    logging.debug('sleep')
-                    time.sleep_ms(100)
+                animations_left = animations.animation_cycle()
+                if animations_left:
+                    time.sleep(0.009)
+                else:
+                    if time.ticks_diff(time.ticks_ms(), last_conn) > NO_CONN_SLEEP_THRESHOLD_MS:
+                        # required for WEB repl on ESP32
+                        logging.debug('sleep')
+                        time.sleep_ms(100)
             logging.debug('main cycle end')
 
     except BaseException as e:

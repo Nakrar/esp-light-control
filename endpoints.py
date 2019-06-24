@@ -1,9 +1,9 @@
 import logging
 
-import animations
 import led
 import routes
 import strips
+from animations import brightness_animation, add_animation, cleat_animations, pastel_breathe
 
 
 @routes.register('/')
@@ -37,14 +37,28 @@ def strip_endpoint(request):
     else:
         stps = (strip,)
 
+    if value == 0:
+        cleat_animations()
+
     for strip in stps:
         # we want to achieve desired brightness in 0.6 second
-        # for now there is 100fps
-        step = (value - strip.get_brightness()) / 0.6 / 100
-        anim = animations.brightness_animation(strip, strip.get_brightness(), value, step)
-        animations.add_animation(anim)
+        animation = brightness_animation(strip, strip.get_brightness(), value, 0.6)
+        add_animation(animation)
 
     return '{} {}'.format(strip_name, value)
+
+
+@routes.register('/strip/rgb/breathe')
+def rgb_breathe_endpoint(request):
+    logging.info('rgb_breathe_endpoint')
+
+    strip = strips.STRIPS.get('rgb')
+    if strip is None:
+        return 'not found'
+
+    add_animation(pastel_breathe(strip))
+
+    return ''
 
 
 @routes.register('/strip/rgb/color')

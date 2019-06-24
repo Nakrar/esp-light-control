@@ -2,7 +2,7 @@
 import logging
 
 import animations
-from constants import DEBUG_IP, NORMAL_IP
+from constants import DEBUG_IP, NORMAL_IP, ANIMATION_FPS
 
 logging.basicConfig(level=logging.INFO)
 
@@ -40,10 +40,11 @@ def main(critical_enabled=True):
     ws_s.start(80)
 
     last_conn = time.ticks_ms()
+    frame_sleep = 1 / ANIMATION_FPS
 
     try:
+        logging.debug('main cycle start')
         while True:
-            logging.debug('main cycle start')
             work_done = ws_s.process_clients()
             if work_done:
                 last_conn = time.ticks_ms()
@@ -51,13 +52,12 @@ def main(critical_enabled=True):
                 ws_s.process_new_connections()
                 animations_left = animations.animation_cycle()
                 if animations_left:
-                    time.sleep(0.009)
+                    time.sleep(frame_sleep)
                 else:
                     if time.ticks_diff(time.ticks_ms(), last_conn) > NO_CONN_SLEEP_THRESHOLD_MS:
                         # required for WEB repl on ESP32
                         logging.debug('sleep')
                         time.sleep_ms(100)
-            logging.debug('main cycle end')
 
     except BaseException as e:
         ws_s.stop()

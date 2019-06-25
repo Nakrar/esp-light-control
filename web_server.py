@@ -28,7 +28,9 @@ class WebSocketClient:
             self._process(msg)
             return True
         except ClientClosedError:
+            # just print exception, so execution would continue normally
             self.connection.close()
+            logging.info('ClientClosedError')
         except Exception as e:
             self.connection.close()
             raise e

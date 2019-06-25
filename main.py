@@ -4,6 +4,7 @@ import logging
 import animations
 from constants import DEBUG_IP, NORMAL_IP, ANIMATION_FPS
 
+
 logging.basicConfig(level=logging.INFO)
 
 import network
@@ -19,6 +20,10 @@ import endpoints
 endpoints.register()
 
 NO_CONN_SLEEP_THRESHOLD_MS = 1500
+
+import random
+
+random.seed(time.ticks_ms())
 
 
 def main(critical_enabled=True):

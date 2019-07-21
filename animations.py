@@ -9,14 +9,12 @@ from helpers import next_animation_frame, hsl_to_rgb, gradient
 ANIMATIONS = []
 
 
-current_fps = ANIMATION_MAX_FPS
 frames = 0
 last_time = 0
 
 
 def animation_cycle():
     global ANIMATIONS
-    global current_fps
     global frames
     global last_time
 
@@ -33,7 +31,6 @@ def animation_cycle():
 
         now_time = time.time()
         if now_time > last_time:
-            current_fps = frames
             logging.info('fps {}'.format(frames))
             last_time = now_time
             frames = 0
@@ -76,7 +73,7 @@ def pastel_breathe(strip, time_per_color=63, blend_in_time=3, breathe_time=20, s
         if len(to_colors) != colors_n:
             raise ValueError('len(from_colors) {} != len(to_colors) {}'.format(len(to_colors), colors_n))
 
-        frames = int(current_fps * time + 0.5)
+        frames = int(ANIMATION_MAX_FPS * time + 0.5)
         current_colors = list(from_colors)
 
         for frame in range(frames):
@@ -99,7 +96,7 @@ def pastel_breathe(strip, time_per_color=63, blend_in_time=3, breathe_time=20, s
 
         while True:
 
-            breathe_frames = int(breathe_time * current_fps + 0.5)
+            breathe_frames = int(breathe_time * ANIMATION_MAX_FPS + 0.5)
 
             for frame in range(breathe_frames):
                 t = (frame + 1) / breathe_frames
@@ -130,7 +127,7 @@ def pastel_breathe(strip, time_per_color=63, blend_in_time=3, breathe_time=20, s
 
     hue_current = random.randrange(360)
 
-    frames_per_color = time_per_color * current_fps
+    frames_per_color = time_per_color * ANIMATION_MAX_FPS
     # update right after launch
 
     current_colors = [(0, 0, 0) for i in range(sections)]
@@ -172,7 +169,7 @@ def brightness_animation(strip, start, end, time):
         return
 
     delta = end - start
-    steps = int(time * current_fps + 0.5)
+    steps = int(time * ANIMATION_MAX_FPS + 0.5)
 
     for step in range(steps):
         t = (step + 1) / steps

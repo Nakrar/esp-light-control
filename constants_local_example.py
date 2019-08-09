@@ -1,0 +1,5 @@
+NORMAL_IP = '192.168.0.10'
+DEBUG_IP = '192.168.0.11'
+
+WIFI_LOGIN = 'login'
+WIFI_PASS = 'pass'

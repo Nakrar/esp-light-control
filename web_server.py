@@ -226,7 +226,7 @@ Sec-WebSocket-Accept: """)
 
 
 def parse_request_data(conn):
-    # ['GET', '/', 'HTTP/1.1', 'Host:', '***REMOVED***', 'Upgrade:', 'websocket', 'Connection:', 'Upgrade',
+    # ['GET', '/', 'HTTP/1.1', 'Host:', '192.168.0.15', 'Upgrade:', 'websocket', 'Connection:', 'Upgrade',
     #  'Sec-WebSocket-Key:', 'fZ6G/yw4gc1roSlJcdkJJA==', 'Sec-WebSocket-Version:', '13', 'Sec-WebSocket-Extensions:',
     #  'permessage-deflate;', 'client_max_window_bits', 'User-Agent:', 'Python/3.7', 'websockets/7.0']
 
